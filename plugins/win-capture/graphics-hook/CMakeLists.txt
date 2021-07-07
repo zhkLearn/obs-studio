@@ -2,6 +2,7 @@ project(graphics-hook)
 
 set(COMPILE_D3D12_HOOK FALSE CACHE BOOL "Compile D3D12 hook support (required windows 10 SDK)")
 
+find_package(Detours REQUIRED)
 find_package(Vulkan REQUIRED)
 include_directories(${VULKAN_INCLUDE_DIR})
 
@@ -50,10 +51,14 @@ add_library(graphics-hook MODULE
 	${graphics-hook_HEADERS})
 
 target_include_directories(graphics-hook PUBLIC
+	${DETOURS_INCLUDE_DIR}
 	"${CMAKE_BINARY_DIR}/plugins/win-capture/graphics-hook/config")
 
 target_link_libraries(graphics-hook
-	ipc-util psapi)
+	dxguid
+	ipc-util
+	psapi
+	${DETOURS_LIBRARIES})
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(_output_suffix "64")
@@ -63,6 +68,7 @@ endif()
 
 set_target_properties(graphics-hook
 	PROPERTIES
+		FOLDER "plugins/win-capture"
 		OUTPUT_NAME "graphics-hook${_output_suffix}")
 
 if (VULKAN_FOUND)

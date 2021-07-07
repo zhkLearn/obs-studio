@@ -19,7 +19,9 @@ if [[ $OS = "Linux" || $OS = "Darwin" ]] ; then
 fi
 
 # Discover clang-format
-if type clang-format-8 2> /dev/null ; then
+if type clang-format-10 2> /dev/null ; then
+    CLANG_FORMAT=clang-format-10
+elif type clang-format-8 2> /dev/null ; then
     CLANG_FORMAT=clang-format-8
 else
     CLANG_FORMAT=clang-format
@@ -35,4 +37,4 @@ find . -type d \( -path ./deps \
 -o -path ./plugins/obs-outputs/ftl-sdk \
 -o -path ./plugins/obs-vst \
 -o -path ./build \) -prune -type f -o -name '*.h' -or -name '*.hpp' -or -name '*.m' -or -name '*.mm' -or -name '*.c' -or -name '*.cpp' \
-| xargs -I{} -P ${NPROC} ${CLANG_FORMAT} -i -style=file  -fallback-style=none {}
+| xargs -L100 -P${NPROC} ${CLANG_FORMAT} -i -style=file  -fallback-style=none

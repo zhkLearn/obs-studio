@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 if(NOT ENABLE_SCRIPTING)
 	message(STATUS "Scripting plugin disabled")
@@ -85,10 +85,6 @@ set(SCRIPTING_ENABLED ON CACHE BOOL "Internal global cmake variable" FORCE)
 if(UI_ENABLED)
 	set(EXTRA_LIBS obs-frontend-api)
 	include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/UI/obs-frontend-api")
-endif()
-
-IF(BUILD_CAPTIONS)
-	string(TOUPPER "${BUILD_CAPTIONS}" BUILD_CAPTIONS)
 endif()
 
 configure_file(
@@ -206,6 +202,8 @@ target_link_libraries(obs-scripting
 	${EXTRA_LIBS}
 	${obs-scripting_PLATFORM_DEPS}
 	)
+
+set_target_properties(obs-scripting PROPERTIES FOLDER "scripting")
 
 if(PYTHONLIBS_FOUND)
 	add_subdirectory(obspython)
